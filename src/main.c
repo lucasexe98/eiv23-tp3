@@ -1,33 +1,19 @@
-#include <stm32f1xx.h>
-#define FREC_RELOJ 8000000 
-#define CICLOS_PASADA_LAZO 
+#include "soporte_placa.h"
 
-//Main es una funcion que no tiene parametros y retorna a un valor entero.
-int main(void){              
-    //Habilita el reloj para el puerto GPIO C
-    RCC -> APB2ENR |= RCC_APB2ENR_IOPCEN; 
-
-    //Configuro 13 como salida push pull
-    GPIOC->CRH = (GPIOC->CRH & ~(GPIO_CRH_CNF13 | GPIO_CRH_MODE13)) | (GPIO_CRH_MODE13_1 | GPIO_CRH_MODE13_0);
-    
-    //Configuro 9 como entrada con pull up
-    GPIOB->CRH = (GPIOB->CRH & ~ (GPIO_CRH_CNF9 | GPIO_CRH_MODE9)) | GPIO_CRH_CNF9_0;
-
-    //Apaga la luz
-    GPIOC -> ODR &= ~GPIO_ODR_ODR13;
-
+int main (void){
+    SP_init();
+    SP_Pin_setModo(SP_PB9,SP_PIN_ENTRADA_PULLUP);
+    SP_Pin_setModo(SP_PC13,SP_PIN_SALIDA);
+    SP_Pin_write (SP_PC13,1);
     while (1)
     {
-        /* Esperar que se presione el pulsador*/
-        while ((GPIOB->IDR &GPIO_IDR_IDR9));
-        GPIOC -> ODR |= GPIO_ODR_ODR13;
-        //Espera 1 minuto si divido 8M en 100 me da 1 segundo
-        for(unsigned i=0;i<60000; ++i){
-            for (unsigned volatile j=0; j < ((FREC_RELOJ/1000)/CICLOS_PASADA_LAZO); ++j);
+        if (!SP_Pin_read(SP_PB9))
+        {
+            SP_Pin_write (SP_PC13,0);
+            SP_delay(60000);
+            SP_Pin_write (SP_PC13,1);
         }
-       // Apaga Luz.
-        GPIOC -> ODR |= GPIO_ODR_ODR13;
+       
     }
-    
-    return 0;                //Retorna a la funcion y devuelve el valor 0.
+return 0;
 }
