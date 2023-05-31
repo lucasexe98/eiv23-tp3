@@ -159,17 +159,6 @@ static void PRUEBA_SP_PinSetModo_SALIDA_2MHz_OD(void){
     TEST_ASSERT_BITS_HIGH(0,ODR_ACTUAL ^ ODR_AFTER);
     TEST_ASSERT_BITS_HIGH(0,CRH_ACTUAL ^ CRH_AFTER);
 }
-/*
-
-static void test_SP_Pin_read__DEBE_retornar_TRUE_si_la_entrada_es_ALTA(void){
-    SP_Pin_setModo(HPIN_PRUEBA,SP_PIN_SALIDA);      // Verificado en otra prueba
-    SP_Pin_write(HPIN_PRUEBA,1);                    // Verificado en otra prueba
-    //TEST_ASSERT_EQUAL(1,SP_Pin_read(HPIN_PRUEBA));
-    SP_Pin_setModo(HPIN_PRUEBA,SP_PIN_ENTRADA);     // Verificado en otra prueba
-    SP_Pin_write(HPIN_PRUEBA,0);                    // Verificado en otra prueba
-    TEST_ASSERT_EQUAL(0,SP_Pin_read(HPIN_PRUEBA));
-}
-*/
 int main (void){
     SP_init();
     SP_delay(500);
