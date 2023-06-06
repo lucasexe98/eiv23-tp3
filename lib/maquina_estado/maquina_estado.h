@@ -1,7 +1,15 @@
-#ifndef MAQUINA_H
-#define MAQUINA_H
+#ifndef MAQUINA_ESTADO_H
+#define MAQUINA_ESTADO_H
+
 #include <stdbool.h>
+
+#ifndef MAX_EV_COLA
 #define MAX_EV_COLA 16 /* debe ser potencia de 2*/
+#endif
+
+#if MAX_EV_COLA & (MAX_EV_COLA - 1)
+#error MAX_EV_COLA debe ser potencia de dos
+#endif
 
 typedef struct Maquina Maquina;
 typedef unsigned Evento;
@@ -15,7 +23,9 @@ enum EventoSistema{
      */
     EV_NULO,
     /**
-     * @brief Reinicia la máquina de estado
+     * @brief Inicia o reinicia la máquina de estado. Establece
+     * como estado actual el estado inicial y luego envía el
+     * evento de reset a dicho estado.
      * 
      */
     EV_RESET,
@@ -44,7 +54,7 @@ struct Maquina{
         unsigned escrituras;
     }cola;
     Estado estadoInicial;
-    Estado estado;
+    Estado estadoActual;
 };
 
 
@@ -57,13 +67,16 @@ struct Maquina{
  * @return false Falla al despachar evento
  */
 bool Maquina_despacha(Maquina *self, Evento evento);
+
 /**
- * @brief Procesa un evento disponible
+ * @brief Procesa un evento disponible. Este método debe ser llamado
+ * desde un solo punto del programa.
  * 
  * @param self Este objeto
  * @return true Evento procesado
  * @return false No había eventos disponibles
  */
 bool Maquina_procesa(Maquina *self);
+
 
 #endif

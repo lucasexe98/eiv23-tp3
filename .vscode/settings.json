@@ -1,5 +1,7 @@
 {
     "files.associations": {
-        "reloj.h": "c"
+        "reloj.h": "c",
+        "cstdio": "c",
+        "maquina_estado_impl.h": "c"
     }
 }

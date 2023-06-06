@@ -1,19 +1,60 @@
-#include "soporte_placa.h"
+#include <soporte_placa.h>
+#include "controlador_luz.h"
+#include "pulsador.h"
+#include "despacho_retardado.h"
+#include <stddef.h>
 
-int main (void){
-    SP_init();
-    SP_Pin_setModo(SP_PB9,SP_PIN_ENTRADA_PULLUP);
-    SP_Pin_setModo(SP_PC13,SP_PIN_SALIDA);
-    SP_Pin_write (SP_PC13,1);
-    while (1)
-    {
-        if (!SP_Pin_read(SP_PB9))
-        {
-            SP_Pin_write (SP_PC13,0);
-            SP_delay(60000);
-            SP_Pin_write (SP_PC13,1);
-        }
-       
+
+#define PIN_LUZ SP_PIN_LED
+#define PIN_PULSADOR SP_PB9
+
+#define HISTERESIS_ANTIRREBOTE 5
+
+#define LUZ_ON 0
+
+#define PULSADOR_NIVEL_ACTIVO 0
+
+#define TIEMPO_ON 60000
+
+
+static Maquina * controlador;
+static Pulsador pulsador[1];
+static DespachoRetardado despachoRetardado[1];
+
+/**
+ * @brief Inicializa el estado del programa para iniciar la ejecución
+ * 
+ */
+static void setup(void);
+
+
+int main(void){    
+    setup();
+    for (;;){
+        Maquina_procesa(controlador);
+        DespachoRetardado_procesa(despachoRetardado);
+        Pulsador_procesa(pulsador);
     }
-return 0;
+    return 0;
+}
+
+
+
+static void setup(void){
+    static ControladorLuz instanciaControlador;
+    
+    SP_init();
+    
+    DespachoRetardado_init(despachoRetardado);
+
+    ControladorLuz_init(&instanciaControlador,TIEMPO_ON,PIN_LUZ,LUZ_ON,despachoRetardado);
+    controlador = ControladorLuz_asMaquina(&instanciaControlador);
+    Maquina_procesa(controlador); // Reset inicializa pin con luz apagada
+
+    Pulsador_init(pulsador, 
+                  controlador,
+                  EV_BOTON_PULSADO,
+                  PIN_PULSADOR,
+                  PULSADOR_NIVEL_ACTIVO,
+                  HISTERESIS_ANTIRREBOTE);
 }

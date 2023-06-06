@@ -1,6 +1,7 @@
-#ifndef MAQUINA_IMPL_H
-#define MAQUINA_IMPL_H
-#include "maquina.h"
+#ifndef MAQUINA_ESTADO_IMPL_H
+#define MAQUINA_ESTADO_IMPL_H
+
+#include <maquina_estado.h>
 
 typedef enum CodResultado{
     RES_IGNORADO,
@@ -10,13 +11,14 @@ typedef enum CodResultado{
 
 struct Resultado{
     CodResultado codigo;
-    Estado param; // Valido cuando resultado = RES_TRANSICION
+    Estado nuevoEstado; // Valido cuando resultado = RES_TRANSICION
 };
 
 /**
  * @brief Inicializa la máquina de estado
  * 
- * @param self Este objeto
+ * @param self Memoria reservada para este objeto
  */
 void Maquina_init(Maquina *self, Estado estadoInicial);
+
 #endif
