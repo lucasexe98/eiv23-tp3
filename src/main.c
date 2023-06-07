@@ -3,6 +3,7 @@
 #include "pulsador.h"
 #include "despacho_retardado.h"
 #include <stddef.h>
+#include "detector_triple_pulsacion.h"
 
 
 #define PIN_LUZ SP_PIN_LED
@@ -16,10 +17,13 @@
 
 #define TIEMPO_ON 60000
 
+#define TIEMPO_DETECTOR 1000
+
 
 static Maquina * controlador;
 static Pulsador pulsador[1];
 static DespachoRetardado despachoRetardado[1];
+static Maquina * detector;
 
 /**
  * @brief Inicializa el estado del programa para iniciar la ejecución
@@ -34,6 +38,8 @@ int main(void){
         Maquina_procesa(controlador);
         DespachoRetardado_procesa(despachoRetardado);
         Pulsador_procesa(pulsador);
+        Maquina_procesa(detector);
+
     }
     return 0;
 }
@@ -42,7 +48,8 @@ int main(void){
 
 static void setup(void){
     static ControladorLuz instanciaControlador;
-    
+    static DetectorTriple instanciaDetector;
+
     SP_init();
     
     DespachoRetardado_init(despachoRetardado);
@@ -51,8 +58,12 @@ static void setup(void){
     controlador = ControladorLuz_asMaquina(&instanciaControlador);
     Maquina_procesa(controlador); // Reset inicializa pin con luz apagada
 
+    DetectorTriple_init(&instanciaDetector, despachoRetardado, TIEMPO_DETECTOR,controlador);
+    detector= DetectorTriple_asMaquina(&instanciaDetector);
+    Maquina_procesa(detector);
+
     Pulsador_init(pulsador, 
-                  controlador,
+                  detector,
                   EV_BOTON_PULSADO,
                   PIN_PULSADOR,
                   PULSADOR_NIVEL_ACTIVO,

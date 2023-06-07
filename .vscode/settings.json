@@ -3,6 +3,12 @@
         "reloj.h": "c",
         "cstdio": "c",
         "maquina_estado_impl.h": "c",
-        "maquina_estado.h": "c"
+        "maquina_estado.h": "c",
+        "stdbool.h": "c",
+        "stm32f1xx.h": "c",
+        "controlador_luz.h": "c",
+        "stdint.h": "c",
+        "despacho_retardado.h": "c",
+        "detector_triple_pulsacion.h": "c"
     }
 }

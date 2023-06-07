@@ -19,6 +19,10 @@ enum EventoAplicacion{
      */
     EV_TIMEOUT,
 
+    EV_TIMEOUT_BOTON,
+
+    EV_MUDANZA
+
 };
 
 #endif

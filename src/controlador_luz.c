@@ -3,6 +3,7 @@
 
 static Resultado estadoApagado(Maquina *ctx,Evento evento);
 static Resultado estadoEncendido(Maquina *ctx,Evento evento);
+static Resultado estadoMudanza(Maquina *ctx,Evento evento);
 
 void ControladorLuz_init(ControladorLuz *self,uint32_t tiempoOn,SP_HPin pinLuz,bool nivelLuzOn,DespachoRetardado *despachoRetardado){
 
@@ -50,6 +51,24 @@ static Resultado estadoEncendido(Maquina *ctx,Evento evento){
     Resultado r = {0};
     switch (evento){
     break; case EV_TIMEOUT:
+        ControladorLuz__apagaLuz(self);
+        r.codigo = RES_TRANSICION;
+        r.nuevoEstado = estadoApagado;
+    break; case EV_MUDANZA:
+        r.codigo = RES_TRANSICION;
+        r.nuevoEstado = estadoMudanza;
+    break;default:
+        r.codigo = RES_IGNORADO;
+    break;
+    }
+    return r;
+}
+
+static Resultado estadoMudanza(Maquina *ctx,Evento evento){
+    ControladorLuz *self = (ControladorLuz*)ctx;
+    Resultado r = {0};
+    switch (evento){
+    break; case EV_MUDANZA:
         ControladorLuz__apagaLuz(self);
         r.codigo = RES_TRANSICION;
         r.nuevoEstado = estadoApagado;
