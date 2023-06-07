@@ -2,6 +2,7 @@
     "files.associations": {
         "reloj.h": "c",
         "cstdio": "c",
-        "maquina_estado_impl.h": "c"
+        "maquina_estado_impl.h": "c",
+        "maquina_estado.h": "c"
     }
 }
